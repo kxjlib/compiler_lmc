@@ -1,7 +1,5 @@
-use std::result;
-
 use super::command::Command;
-use super::token::{self, Token};
+use super::token::{Token};
 
 pub struct Compiler {
     tokens: Vec<Token>,
