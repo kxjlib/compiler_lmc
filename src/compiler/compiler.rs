@@ -1,5 +1,5 @@
 use super::command::Command;
-use super::token::{Token};
+use super::token::Token;
 
 pub struct Compiler {
     tokens: Vec<Token>,
@@ -136,7 +136,7 @@ impl Compiler {
         for cmd in &self.commands {
             memory[program_counter] = match cmd.get_byte_data() {
                 Ok(data) => data,
-                Err(_) => return Err(format!("Collosal fuck-up on my end my bad g"))
+                Err(_) => return Err(format!("Collosal fuck-up on my end my bad g")),
             };
             program_counter += 1;
         }
