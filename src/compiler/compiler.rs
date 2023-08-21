@@ -19,7 +19,7 @@ impl Compiler {
     }
 
     fn prepare_source(&mut self) {
-        self.file_source.retain(|c| c != '\r');
+        self.file_source.retain(|c: char| c != '\r');
         self.file_source.push('\n');
     }
 
