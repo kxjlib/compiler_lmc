@@ -2,7 +2,7 @@ mod compiler;
 mod utils;
 
 use compiler::Compiler;
-use utils::{read_file_to_vec, CLArgHandler, output_to_file};
+use utils::{output_to_file, read_file_to_vec, CLArgHandler};
 
 fn main() -> Result<(), String> {
     // Fetch input file name
@@ -29,10 +29,7 @@ fn main() -> Result<(), String> {
         }
     };
 
-    // Create Compiler object
-    let mut lmc_compiler = Compiler::new(file_contents.clone());
-
-    let memory_data: String = match lmc_compiler.compile() {
+    let memory_data: String = match Compiler::compile(file_contents) {
         Ok(data) => data
             .into_iter()
             .map(|i| i.to_string())
@@ -48,7 +45,13 @@ fn main() -> Result<(), String> {
 
     match output_to_file(output_filename.clone(), memory_data) {
         Ok(_) => {}
-        Err(e) => return Err(format!("[Error] Writing to file {}: {}", output_filename.clone(), e))
+        Err(e) => {
+            return Err(format!(
+                "[Error] Writing to file {}: {}",
+                output_filename.clone(),
+                e
+            ))
+        }
     }
 
     // Return valid exit code

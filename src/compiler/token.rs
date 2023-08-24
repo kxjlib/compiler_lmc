@@ -1,4 +1,6 @@
-#[derive(PartialEq, Clone, Copy)]
+use super::command::Command;
+
+#[derive(Debug, PartialEq, Clone, Copy)]
 pub(in crate::compiler) enum Token {
     Load,          // LDA 5xx
     Store,         // STA 3xx
@@ -13,5 +15,45 @@ pub(in crate::compiler) enum Token {
     DataStore,     // DAT N/A
     Endline,
     IntLiteral(i16),
-    NoToken,
+    IntLiteralNoData,
+}
+
+impl Token {
+    pub fn next_valid(&self, is_first_token: bool) -> Vec<Self> {
+        match self {
+            Self::Load
+            | Self::Store
+            | Self::Add
+            | Self::Subtract
+            | Self::BranchAll
+            | Self::BranchZero
+            | Self::BranchZeroPos => vec![Self::IntLiteralNoData],
+            Self::IntLiteral(_) | Self::End | Self::Output | Self::Input => {
+                vec![Self::Endline]
+            }
+            Self::DataStore => {
+                if is_first_token {
+                    vec![Self::IntLiteralNoData]
+                } else {
+                    vec![Self::IntLiteralNoData, Self::Endline]
+                }
+            }
+
+            Self::Endline => vec![
+                Self::Load,
+                Self::Store,
+                Self::Add,
+                Self::Subtract,
+                Self::Input,
+                Self::Output,
+                Self::End,
+                Self::BranchAll,
+                Self::BranchZero,
+                Self::BranchZeroPos,
+                Self::DataStore,
+                Self::Endline,
+            ],
+            Self::IntLiteralNoData => unreachable!(),
+        }
+    }
 }
